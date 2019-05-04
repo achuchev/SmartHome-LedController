@@ -224,8 +224,8 @@ void lampPublishStatus(bool forcePublish = false,
         lamp = &lamps[i];
       }
 
-      const size_t bufferSize = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(3);
-      DynamicJsonDocument root(bufferSize);
+      const size_t capacity = JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(5);
+      DynamicJsonDocument root(capacity);
       JsonObject status = root.createNestedObject("status");
 
       if (messageId != NULL) {
@@ -260,8 +260,8 @@ void lampSendToLamp(Lamp *lamp, String payload) {
   PRINTLN("LAMP: Send to lamp '" + lamp->name + "'");
 
   // deserialize the payload to JSON
-  const size_t bufferSize = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(3) + 50;
-  DynamicJsonDocument  jsonDoc(bufferSize);
+  const size_t capacity = 2 * JSON_OBJECT_SIZE(3) + 100;
+  DynamicJsonDocument  jsonDoc(capacity);
   DeserializationError error = deserializeJson(jsonDoc, payload);
 
   if (error) {
