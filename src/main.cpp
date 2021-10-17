@@ -127,7 +127,7 @@ void updateLampsState() {
 }
 
 // The interrupt routine handle
-void ICACHE_RAM_ATTR interruptServiceRoutine() {
+void IRAM_ATTR interruptServiceRoutine() {
   uint8_t pinNumber, pinValue;
 
   noInterrupts();
