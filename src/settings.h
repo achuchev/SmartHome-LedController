@@ -3,7 +3,7 @@
 
 #include <Lamp.h>
 #include "DHT.h"
-#include "Adafruit_MCP23017.h"
+#include <Adafruit_MCP23X17.h>
 
 #define DEVICE_NAME "LivingRoomLamp"
 
@@ -45,7 +45,7 @@
 #define PIN_MCP_OUTPUT_LED2_BLUE 3
 
 
-Adafruit_MCP23017 mcp;
+Adafruit_MCP23X17 mcp;
 Lamp *lamp1 = new Lamp("Big Lamp",
                        "/apartment/livingRoom/lamp/1",
                        mcp,

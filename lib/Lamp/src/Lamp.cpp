@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <RemotePrint.h>
-#include "Adafruit_MCP23017.h"
+#include <Adafruit_MCP23X17.h>
 #include "Lamp.h"
 
 
@@ -11,7 +11,7 @@ Lamp::Lamp() {
 
 Lamp::Lamp(String            name,
            String            mqttTopic,
-           Adafruit_MCP23017 mcp,
+           Adafruit_MCP23X17 mcp,
            uint8_t           inputSwitchPin,
            uint8_t           outputRelayPin,
            uint8_t           outputLedWhitePin,

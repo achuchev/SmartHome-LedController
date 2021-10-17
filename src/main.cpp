@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <Wire.h>
-#include "Adafruit_MCP23017.h"
+#include <Adafruit_MCP23X17.h>
 #include <ArduinoJson.h>
 #include <MqttClient.h>
 #include <FotaClient.h>
@@ -101,7 +101,7 @@ void updateLampsState() {
   uint8_t outputRelayPin;
   bool    turnOffOutputRelay;
 
-  for  (int j = 0; j < LAMPS_COUNT; j++) {
+  for (int j = 0; j < LAMPS_COUNT; j++) {
     outputRelayPin     = outputRelayPins[j];
     turnOffOutputRelay = true;
 
@@ -143,7 +143,7 @@ void IRAM_ATTR interruptServiceRoutine() {
   pinNumber = mcp.getLastInterruptPin();
 
   // This one resets the interrupt state as it reads from reg INTCAPA(B).
-  pinValue = mcp.getLastInterruptPinValue();
+  pinValue = mcp.digitalRead(pinNumber);
 
   PRINT_D("Interrupt from input ");
   PRINT_D(pinNumber);
@@ -161,10 +161,12 @@ void IRAM_ATTR interruptServiceRoutine() {
 
 void setPinsMode() {
   // Initialise for interrupts.
-  mcp.readGPIOAB();
+  // mcp.readGPIOAB();
 
   // Enable ESP interrupt control
   pinMode(PIN_ESP_INTERUPT_FROM_MCP, INPUT);
+
+  // ???
   attachInterrupt(digitalPinToInterrupt(PIN_ESP_INTERUPT_FROM_MCP), \
                   interruptServiceRoutine,                          \
                   FALLING);
@@ -195,12 +197,9 @@ void setPinsMode() {
   mcp.pinMode(PIN_MCP_OUTPUT_LED2_BLUE,  OUTPUT);
 
   // Input pins
-  mcp.pinMode(PIN_MCP_INPUT_SWITCH1,     INPUT);
-  mcp.pullUp(PIN_MCP_INPUT_SWITCH1, HIGH);
-  mcp.pinMode(PIN_MCP_INPUT_SWITCH2, INPUT);
-  mcp.pullUp(PIN_MCP_INPUT_SWITCH2, HIGH);
-  mcp.pinMode(PIN_MCP_INPUT_SWITCH3, INPUT);
-  mcp.pullUp(PIN_MCP_INPUT_SWITCH3, HIGH);
+  mcp.pinMode(PIN_MCP_INPUT_SWITCH1,     INPUT_PULLUP);
+  mcp.pinMode(PIN_MCP_INPUT_SWITCH2,     INPUT_PULLUP);
+  mcp.pinMode(PIN_MCP_INPUT_SWITCH3,     INPUT_PULLUP);
 }
 
 void lampPublishStatus(bool forcePublish = false,
@@ -370,7 +369,7 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
 }
 
 void setup() {
-  mcp.begin(MCP_ADDRESS);
+  mcp.begin_I2C(MCP_ADDRESS);
   setPinsMode();
   wifiClient->init();
   fotaClient->init();
